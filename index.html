@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日休假登记</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --primary: #4f6ef7;
+    --primary-hover: #3b57d9;
+    --danger: #e74c5e;
+    --danger-hover: #c0392b;
+    --text: #1e1e2e;
+    --text-secondary: #6c6f85;
+    --border: #e2e4ec;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 60px;
+  }
+
+  .container {
+    max-width: 560px;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* identity bar */
+  .identity-bar {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .identity-bar label {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .identity-bar input {
+    flex: 1;
+    min-width: 100px;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .identity-bar input:focus { border-color: var(--primary); }
+
+  .badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #eef0ff;
+    color: var(--primary);
+    white-space: nowrap;
+  }
+
+  .badge.admin { background: #fff1e0; color: #d97a00; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    font-family: inherit;
+  }
+
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: var(--danger-hover); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-ghost { background: transparent; color: var(--text-secondary); }
+  .btn-ghost:hover { color: var(--danger); }
+
+  /* date nav */
+  .date-nav {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .date-nav .date-label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .date-nav .nav-btns { display: flex; gap: 4px; }
+
+  .date-nav .nav-btns button {
+    width: 34px;
+    height: 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .date-nav .nav-btns button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* slots */
+  .slots-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+
+  .slots-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .slots-header h2 {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .slots-header .count {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .slot-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    transition: 0.15s;
+    min-height: 44px;
+  }
+
+  .slot.empty {
+    border-style: dashed;
+    background: #fafbfc;
+    cursor: default;
+  }
+
+  .slot .name {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .slot .actions { display: flex; gap: 6px; }
+
+  .slot .slot-index {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-right: 8px;
+  }
+
+  .slot .empty-hint {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  /* admin panel */
+  .admin-panel {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .admin-panel.visible { display: block; }
+
+  .admin-panel label {
+    font-size: 13px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .admin-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .admin-row input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .admin-row input:focus { border-color: var(--primary); }
+
+  .admin-toggle {
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    font-family: inherit;
+    text-decoration: underline dotted;
+  }
+
+  .admin-toggle:hover { color: var(--primary); }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e2e;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .toast.show { opacity: 1; }
+
+  .weekend-msg {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+  .weekend-msg span { font-size: 36px; display: block; margin-bottom: 8px; }
+
+  @media (max-width: 480px) {
+    body { padding: 16px 12px 40px; }
+    .identity-bar { flex-direction: column; align-items: stretch; }
+    .identity-bar input { min-width: unset; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📋 每日休假登记</h1>
+  <p class="subtitle">周一、二限 5 人 · 周三、四限 6 人 · 周五限 7 人 · 周末休息</p>
+
+  <!-- identity -->
+  <div class="identity-bar">
+    <label>你的名字</label>
+    <input type="text" id="myName" placeholder="输入你的姓名" maxlength="20">
+    <button class="btn btn-primary btn-sm" id="confirmName">确认</button>
+    <span class="badge" id="identityBadge" style="display:none">未确认</span>
+    <button class="admin-toggle" id="adminToggle">管理员入口</button>
+  </div>
+
+  <!-- admin -->
+  <div class="admin-panel" id="adminPanel">
+    <label>管理员密码</label>
+    <div class="admin-row">
+      <input type="password" id="adminPwd" placeholder="输入管理员密码" maxlength="20">
+      <button class="btn btn-primary btn-sm" id="adminLogin">登录</button>
+    </div>
+    <div class="admin-row" id="adminAddRow" style="display:none">
+      <input type="text" id="adminSlotName" placeholder="要添加的名字" maxlength="20">
+      <input type="number" id="adminSlotIndex" placeholder="位置 (1-7)" min="1" max="7">
+      <button class="btn btn-outline btn-sm" id="adminAddBtn">添加</button>
+    </div>
+  </div>
+
+  <!-- date nav -->
+  <div class="date-nav">
+    <div class="nav-btns">
+      <button id="prevDay">◀</button>
+    </div>
+    <div class="date-label" id="dateLabel">加载中...</div>
+    <div class="nav-btns">
+      <button id="todayBtn">今天</button>
+      <button id="nextDay">▶</button>
+    </div>
+  </div>
+
+  <!-- slots -->
+  <div class="slots-card">
+    <div class="slots-header">
+      <h2>休假人员</h2>
+      <span class="count" id="slotCount">0 / 5</span>
+    </div>
+    <div class="slot-list" id="slotList"></div>
+  </div>
+
+  <div class="footer-note">
+    普通用户只能添加或删除自己的名字 · 管理员可以管理所有人 · 周末不统计
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---------- state ----------
+  const ADMIN_PWD = 'admin123';
+
+  // 按星期获取每日限额 (0=周日, 1=周一 ... 6=周六)
+  function getDayLimit(d) {
+    const day = d.getDay();
+    if (day === 0 || day === 6) return 0;
+    if (day === 1 || day === 2) return 5;
+    if (day === 3 || day === 4) return 6;
+    if (day === 5) return 7;
+    return 5;
+  }
+
+  function isWeekend(d) {
+    const day = d.getDay();
+    return day === 0 || day === 6;
+  }
+
+  let currentUser = null;
+  let isAdmin = false;
+  let currentDate = new Date();
+  currentDate.setHours(0,0,0,0);
+
+  const STORAGE_KEY = 'leave_schedule_data';
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  }
+
+  function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function dateKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    return '' + y + '-' + m + '-' + day;
+  }
+
+  function getSlotsForDate(d) {
+    const data = loadData();
+    const key = dateKey(d);
+    return data[key] || [];
+  }
+
+  function setSlotsForDate(d, slots) {
+    const data = loadData();
+    data[dateKey(d)] = slots;
+    saveData(data);
+  }
+
+  // ---------- render ----------
+  function render() {
+    const dk = dateKey(currentDate);
+    const maxSlots = getDayLimit(currentDate);
+    const weekend = isWeekend(currentDate);
+    const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+    const label = dk + ' ' + weekdays[currentDate.getDay()];
+    document.getElementById('dateLabel').textContent = label;
+    const todayBtn = document.getElementById('todayBtn');
+    todayBtn.style.display = dateKey(new Date()) === dk ? 'none' : '';
+
+    const slots = getSlotsForDate(currentDate);
+    const container = document.getElementById('slotList');
+    const countEl = document.getElementById('slotCount');
+    countEl.textContent = weekend ? '休息日' : slots.length + ' / ' + maxSlots;
+
+    container.innerHTML = '';
+
+    if (weekend) {
+      const msg = document.createElement('div');
+      msg.className = 'weekend-msg';
+      msg.innerHTML = '<span>🎉</span>今天休息，不统计休假';
+      container.appendChild(msg);
+      const badge = document.getElementById('identityBadge');
+      if (currentUser) {
+        badge.textContent = currentUser;
+        badge.style.display = '';
+        badge.className = 'badge' + (isAdmin ? ' admin' : '');
+      } else {
+        badge.style.display = 'none';
+      }
+      return;
+    }
+
+    for (let i = 0; i < maxSlots; i++) {
+      const div = document.createElement('div');
+      div.className = 'slot';
+
+      if (i < slots.length && slots[i] && slots[i].trim()) {
+        const name = slots[i].trim();
+        div.classList.add('occupied');
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'name';
+        const idxSpan = document.createElement('span');
+        idxSpan.className = 'slot-index';
+        idxSpan.textContent = (i+1) + '.';
+        nameSpan.appendChild(idxSpan);
+        nameSpan.appendChild(document.createTextNode(name));
+        div.appendChild(nameSpan);
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+
+        const canDelete = isAdmin || (currentUser && currentUser === name);
+        if (canDelete) {
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn btn-ghost btn-sm';
+          delBtn.textContent = '✕';
+          delBtn.title = '移除';
+          delBtn.addEventListener('click', (function(idx) {
+            return function() { removeSlot(idx); };
+          })(i));
+          actions.appendChild(delBtn);
+        }
+
+        if (isAdmin) {
+          const editBtn = document.createElement('button');
+          editBtn.className = 'btn btn-outline btn-sm';
+          editBtn.textContent = '✎';
+          editBtn.title = '修改名字';
+          editBtn.addEventListener('click', (function(idx, nm) {
+            return function() {
+              const newName = prompt('修改为:', nm);
+              if (newName && newName.trim()) {
+                slots[idx] = newName.trim();
+                setSlotsForDate(currentDate, slots);
+                render();
+                showToast('已修改');
+              }
+            };
+          })(i, name));
+          actions.appendChild(editBtn);
+        }
+
+        if (actions.children.length > 0) div.appendChild(actions);
+      } else {
+        div.classList.add('empty');
+        const hint = document.createElement('span');
+        hint.className = 'empty-hint';
+        const idxSpan = document.createElement('span');
+        idxSpan.className = 'slot-index';
+        idxSpan.textContent = (i+1) + '.';
+        hint.appendChild(idxSpan);
+        hint.appendChild(document.createTextNode('空闲'));
+        div.appendChild(hint);
+
+        if (currentUser || isAdmin) {
+          const addBtn = document.createElement('button');
+          addBtn.className = 'btn btn-outline btn-sm';
+          addBtn.textContent = '+ 登记';
+          addBtn.addEventListener('click', (function(idx) {
+            return function() {
+              if (!isAdmin && !currentUser) return;
+              if (slots.length >= maxSlots) {
+                showToast('已达 ' + maxSlots + ' 人上限');
+                return;
+              }
+              let name;
+              if (isAdmin) {
+                name = prompt('输入要添加的名字:');
+                if (!name || !name.trim()) return;
+              } else {
+                name = currentUser;
+              }
+              if (slots.some(function(s) { return s && s.trim() === name.trim(); })) {
+                showToast('"' + name.trim() + '" 已登记');
+                return;
+              }
+              let inserted = false;
+              for (let j = 0; j < maxSlots; j++) {
+                if (j >= slots.length || !slots[j] || !slots[j].trim()) {
+                  slots[j] = name.trim();
+                  inserted = true;
+                  break;
+                }
+              }
+              if (!inserted && slots.length < maxSlots) {
+                slots.push(name.trim());
+              }
+              const compacted = slots.filter(function(s) { return s && s.trim(); });
+              setSlotsForDate(currentDate, compacted);
+              render();
+              showToast('已登记 "' + name.trim() + '"');
+            };
+          })(i));
+          div.appendChild(addBtn);
+        }
+      }
+
+      container.appendChild(div);
+    }
+
+    const badge = document.getElementById('identityBadge');
+    if (currentUser) {
+      badge.textContent = currentUser;
+      badge.style.display = '';
+      badge.className = 'badge' + (isAdmin ? ' admin' : '');
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // ---------- actions ----------
+  function removeSlot(index) {
+    const slots = getSlotsForDate(currentDate);
+    if (index < 0 || index >= slots.length) return;
+
+    const name = slots[index].trim();
+    if (!isAdmin && (!currentUser || currentUser !== name)) {
+      showToast('只能删除自己的名字');
+      return;
+    }
+
+    slots.splice(index, 1);
+    setSlotsForDate(currentDate, slots);
+    render();
+    showToast('已移除 "' + name + '"');
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(function() { el.classList.remove('show'); }, 2200);
+  }
+
+  // ---------- navigation ----------
+  document.getElementById('prevDay').addEventListener('click', function() {
+    currentDate.setDate(currentDate.getDate() - 1);
+    render();
+  });
+
+  document.getElementById('nextDay').addEventListener('click', function() {
+    currentDate.setDate(currentDate.getDate() + 1);
+    render();
+  });
+
+  document.getElementById('todayBtn').addEventListener('click', function() {
+    currentDate = new Date();
+    currentDate.setHours(0,0,0,0);
+    render();
+  });
+
+  // ---------- identity ----------
+  document.getElementById('confirmName').addEventListener('click', function() {
+    const input = document.getElementById('myName');
+    const name = input.value.trim();
+    if (!name) {
+      showToast('请输入姓名');
+      return;
+    }
+    currentUser = name;
+    input.value = name;
+    render();
+    showToast('你好，' + name);
+  });
+
+  document.getElementById('myName').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('confirmName').click();
+  });
+
+  // ---------- admin ----------
+  document.getElementById('adminToggle').addEventListener('click', function() {
+    const panel = document.getElementById('adminPanel');
+    panel.classList.toggle('visible');
+  });
+
+  document.getElementById('adminLogin').addEventListener('click', function() {
+    const pwd = document.getElementById('adminPwd').value;
+    if (pwd === ADMIN_PWD) {
+      isAdmin = true;
+      document.getElementById('adminLogin').textContent = '已登录';
+      document.getElementById('adminLogin').style.background = '#27ae60';
+      document.getElementById('adminAddRow').style.display = 'flex';
+      showToast('管理员模式已激活');
+      render();
+    } else {
+      showToast('密码错误');
+    }
+  });
+
+  document.getElementById('adminPwd').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('adminLogin').click();
+  });
+
+  document.getElementById('adminAddBtn').addEventListener('click', function() {
+    const nameInput = document.getElementById('adminSlotName');
+    const idxInput = document.getElementById('adminSlotIndex');
+    const name = nameInput.value.trim();
+    const idx = parseInt(idxInput.value);
+    const maxSlots = getDayLimit(currentDate);
+    if (!name) { showToast('请输入名字'); return; }
+    if (isNaN(idx) || idx < 1 || idx > maxSlots) { showToast('位置请输入 1-' + maxSlots); return; }
+
+    const slots = getSlotsForDate(currentDate);
+    if (idx - 1 < slots.length && slots[idx-1] && slots[idx-1].trim()) {
+      showToast('位置 ' + idx + ' 已被占用');
+      return;
+    }
+    if (slots.some(function(s) { return s && s.trim() === name; })) {
+      showToast('"' + name + '" 已登记');
+      return;
+    }
+    while (slots.length < idx) slots.push('');
+    slots[idx-1] = name;
+    const compacted = slots.filter(function(s) { return s && s.trim(); });
+    if (compacted.length > maxSlots) {
+      showToast('最多 ' + maxSlots + ' 人');
+      return;
+    }
+    setSlotsForDate(currentDate, compacted);
+    nameInput.value = '';
+    idxInput.value = '';
+    render();
+    showToast('已添加 "' + name + '" 到位置 ' + idx);
+  });
+
+  // ---------- init ----------
+  render();
+</script>
+</body>
+</html>
