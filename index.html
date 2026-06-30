@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日休假登记</title>
+<title>每日不在岗人员登记</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 
@@ -320,7 +320,7 @@
 <body>
 
 <div class="container">
-  <h1>📋 每日休假登记</h1>
+  <h1>📋 每日不在岗人员登记</h1>
   <p class="subtitle">周一、二限 7 人 · 周三、四限 8 人 · 周五限 9 人 · 周末及法定节假日休息</p>
 
   <!-- identity -->
@@ -361,7 +361,7 @@
   <!-- slots -->
   <div class="slots-card">
     <div class="slots-header">
-      <h2>休假人员</h2>
+      <h2>不在岗人员</h2>
       <span class="count" id="slotCount">0 / 5</span>
     </div>
     <div class="slot-list" id="slotList"></div>
@@ -482,7 +482,7 @@
     if (dayOff) {
       const msg = document.createElement('div');
       msg.className = 'dayoff-msg';
-      msg.innerHTML = (function(){var hn = getHolidayName(currentDate); return hn ? '<span>🎉</span>今天休息（<span class="holiday-name">' + hn + '</span>），不统计休假' : '<span>🎉</span>今天休息，不统计休假'})();
+      msg.innerHTML = (function(){var hn = getHolidayName(currentDate); return hn ? '<span>🎉</span>今天休息（<span class="holiday-name">' + hn + '</span>），不统计休假' : '<span>🎉</span>今天休息，不统计'})();
       container.appendChild(msg);
       const badge = document.getElementById('identityBadge');
       if (currentUser) {
