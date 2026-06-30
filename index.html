@@ -302,13 +302,13 @@
 
   .toast.show { opacity: 1; }
 
-  .weekend-msg {
+  .dayoff-msg {
     text-align: center;
     padding: 32px 0;
     color: var(--text-secondary);
     font-size: 15px;
   }
-  .weekend-msg span { font-size: 36px; display: block; margin-bottom: 8px; }
+  .dayoff-msg span { font-size: 36px; display: block; margin-bottom: 8px; }
 
   @media (max-width: 480px) {
     body { padding: 16px 12px 40px; }
@@ -321,7 +321,7 @@
 
 <div class="container">
   <h1>📋 每日休假登记</h1>
-  <p class="subtitle">周一、二限 5 人 · 周三、四限 6 人 · 周五限 7 人 · 周末休息</p>
+  <p class="subtitle">周一、二限 7 人 · 周三、四限 8 人 · 周五限 9 人 · 周末及法定节假日休息</p>
 
   <!-- identity -->
   <div class="identity-bar">
@@ -341,7 +341,7 @@
     </div>
     <div class="admin-row" id="adminAddRow" style="display:none">
       <input type="text" id="adminSlotName" placeholder="要添加的名字" maxlength="20">
-      <input type="number" id="adminSlotIndex" placeholder="位置 (1-7)" min="1" max="7">
+      <input type="number" id="adminSlotIndex" placeholder="位置 (1-9)" min="1" max="9">
       <button class="btn btn-outline btn-sm" id="adminAddBtn">添加</button>
     </div>
   </div>
@@ -368,7 +368,7 @@
   </div>
 
   <div class="footer-note">
-    普通用户只能添加或删除自己的名字 · 管理员可以管理所有人 · 周末不统计
+    普通用户只能添加或删除自己的名字 · 管理员可以管理所有人 · 周末及法定节假日不统计
   </div>
 </div>
 
@@ -382,16 +382,47 @@
   function getDayLimit(d) {
     const day = d.getDay();
     if (day === 0 || day === 6) return 0;
-    if (day === 1 || day === 2) return 5;
-    if (day === 3 || day === 4) return 6;
-    if (day === 5) return 7;
-    return 5;
+    if (day === 1 || day === 2) return 7;
+    if (day === 3 || day === 4) return 8;
+    if (day === 5) return 9;
+    return 7;
   }
 
-  function isWeekend(d) {
-    const day = d.getDay();
-    return day === 0 || day === 6;
+  function isDayOff(d) {
+    var w = d.getDay();
+    if (w === 0 || w === 6) return true;
+    var m = ("0" + (d.getMonth() + 1)).slice(-2);
+    var dy = ("0" + d.getDate()).slice(-2);
+    return HOLIDAYS[m + "-" + dy] !== undefined;
   }
+
+  function getHolidayName(d) {
+    var m = ("0" + (d.getMonth() + 1)).slice(-2);
+    var dy = ("0" + d.getDate()).slice(-2);
+    return HOLIDAYS[m + "-" + dy] || null;
+  }
+
+  var HOLIDAYS = {
+    '01-01': '元旦',
+    '02-16': '春节',
+    '02-17': '春节',
+    '02-18': '春节',
+    '02-19': '春节',
+    '02-20': '春节',
+    '02-21': '春节',
+    '02-22': '春节',
+    '04-05': '清明节',
+    '05-01': '劳动节',
+    '06-19': '端午节',
+    '09-27': '中秋节',
+    '10-01': '国庆节',
+    '10-02': '国庆节',
+    '10-03': '国庆节',
+    '10-04': '国庆节',
+    '10-05': '国庆节',
+    '10-06': '国庆节',
+    '10-07': '国庆节'
+  };
 
   let currentUser = null;
   let isAdmin = false;
@@ -434,7 +465,7 @@
   function render() {
     const dk = dateKey(currentDate);
     const maxSlots = getDayLimit(currentDate);
-    const weekend = isWeekend(currentDate);
+    var dayOff = isDayOff(currentDate);
     const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
     const label = dk + ' ' + weekdays[currentDate.getDay()];
     document.getElementById('dateLabel').textContent = label;
@@ -444,14 +475,14 @@
     const slots = getSlotsForDate(currentDate);
     const container = document.getElementById('slotList');
     const countEl = document.getElementById('slotCount');
-    countEl.textContent = weekend ? '休息日' : slots.length + ' / ' + maxSlots;
+    countEl.textContent = dayOff ? '休息日' : slots.length + ' / ' + maxSlots;
 
     container.innerHTML = '';
 
-    if (weekend) {
+    if (dayOff) {
       const msg = document.createElement('div');
-      msg.className = 'weekend-msg';
-      msg.innerHTML = '<span>🎉</span>今天休息，不统计休假';
+      msg.className = 'dayoff-msg';
+      msg.innerHTML = (function(){var hn = getHolidayName(currentDate); return hn ? '<span>🎉</span>今天休息（<span class="holiday-name">' + hn + '</span>），不统计休假' : '<span>🎉</span>今天休息，不统计休假'})();
       container.appendChild(msg);
       const badge = document.getElementById('identityBadge');
       if (currentUser) {
