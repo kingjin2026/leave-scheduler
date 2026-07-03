@@ -351,8 +351,9 @@
     <div class="nav-btns">
       <button id="prevDay">◀</button>
     </div>
-    <div style="flex:1;text-align:center">
-      <input type="date" id="datePicker" style="font-size:14px;font-family:inherit;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;outline:none;cursor:pointer;text-align:center;background:var(--card)">
+    <div style="flex:1;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px">
+      <input type="date" id="datePicker" style="font-size:14px;font-family:inherit;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;outline:none;cursor:pointer;background:var(--card)">
+      <span id="weekdayLabel" style="font-size:14px;font-weight:600;color:var(--primary);white-space:nowrap"></span>
     </div>
     <div class="nav-btns">
       <button id="todayBtn">今天</button>
@@ -470,6 +471,7 @@
     var dayOff = isDayOff(currentDate);
     const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
     document.getElementById('datePicker').value = dk;
+    document.getElementById('weekdayLabel').textContent = weekdays[currentDate.getDay()];
     const todayBtn = document.getElementById('todayBtn');
     todayBtn.style.display = dateKey(new Date()) === dk ? 'none' : '';
 
