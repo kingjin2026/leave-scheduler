@@ -351,7 +351,9 @@
     <div class="nav-btns">
       <button id="prevDay">◀</button>
     </div>
-    <div class="date-label" id="dateLabel">加载中...</div>
+    <div style="flex:1;text-align:center">
+      <input type="date" id="datePicker" style="font-size:14px;font-family:inherit;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;outline:none;cursor:pointer;text-align:center;background:var(--card)">
+    </div>
     <div class="nav-btns">
       <button id="todayBtn">今天</button>
       <button id="nextDay">▶</button>
@@ -467,8 +469,7 @@
     const maxSlots = getDayLimit(currentDate);
     var dayOff = isDayOff(currentDate);
     const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
-    const label = dk + ' ' + weekdays[currentDate.getDay()];
-    document.getElementById('dateLabel').textContent = label;
+    document.getElementById('datePicker').value = dk;
     const todayBtn = document.getElementById('todayBtn');
     todayBtn.style.display = dateKey(new Date()) === dk ? 'none' : '';
 
@@ -591,6 +592,13 @@
                 slots.push(name.trim());
               }
               const compacted = slots.filter(function(s) { return s && s.trim(); });
+
+  document.getElementById('datePicker').addEventListener('change', function() {
+    var parts = this.value.split('-');
+    currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    currentDate.setHours(0, 0, 0, 0);
+    render();
+  });
               setSlotsForDate(currentDate, compacted);
               render();
               showToast('已登记 "' + name.trim() + '"');
@@ -652,6 +660,13 @@
   document.getElementById('todayBtn').addEventListener('click', function() {
     currentDate = new Date();
     currentDate.setHours(0,0,0,0);
+    render();
+  });
+
+  document.getElementById('datePicker').addEventListener('change', function() {
+    var parts = this.value.split('-');
+    currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    currentDate.setHours(0, 0, 0, 0);
     render();
   });
 
