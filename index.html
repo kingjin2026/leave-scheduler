@@ -663,6 +663,21 @@
     render();
   });
 
+  
+document.getElementById('datePicker').addEventListener('change', function() {
+    var parts = this.value.split('-');
+    currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    currentDate.setHours(0, 0, 0, 0);
+    render();
+  });
+
+  document.getElementById('datePicker').addEventListener('change', function() {
+    var parts = this.value.split('-');
+    currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    currentDate.setHours(0, 0, 0, 0);
+    render();
+  });
+
   document.getElementById('datePicker').addEventListener('change', function() {
     var parts = this.value.split('-');
     currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
