@@ -1,1 +1,119 @@
-C:\Users\kingjin\Documents\Codex\2026-06-27\cehng\outputs\scheduler.html
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>每日不在岗人员登记</title>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f6fa;--card:#fff;--primary:#4f6ef7;--primary-hover:#3b57d9;--danger:#e74c5e;--text:#1e1e2e;--text-secondary:#6c6f85;--border:#e2e4ec;--radius:10px;--shadow:0 2px 12px rgba(0,0,0,0.06)}
+body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 60px}
+.container{max-width:560px;width:100%}
+h1{font-size:24px;font-weight:700;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:var(--text-secondary);font-size:14px;margin-bottom:24px}
+.identity-bar{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px;display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.identity-bar label{font-size:14px;font-weight:500;white-space:nowrap}
+.identity-bar input{flex:1;min-width:100px;padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:14px;outline:none;transition:border-color .2s}
+.identity-bar input:focus{border-color:var(--primary)}
+.badge{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#eef0ff;color:var(--primary);white-space:nowrap}
+.badge.admin{background:#fff1e0;color:#d97a00}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 16px;border:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-ghost{background:transparent;color:var(--text-secondary)}.btn-ghost:hover{color:var(--danger)}
+.date-nav{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.date-nav .nav-btns{display:flex;gap:4px}
+.date-nav .nav-btns button{width:34px;height:34px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.date-nav .nav-btns button:hover{border-color:var(--primary);color:var(--primary)}
+.slots-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.slots-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.slots-header h2{font-size:15px;font-weight:600}
+.slots-header .count{font-size:13px;color:var(--text-secondary)}
+.slot-list{display:flex;flex-direction:column;gap:8px}
+.slot{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);min-height:44px}
+.slot.empty{border-style:dashed;background:#fafbfc}
+.slot .name{font-weight:500;font-size:14px}
+.slot .actions{display:flex;gap:6px}
+.slot .slot-index{font-size:12px;color:var(--text-secondary);margin-right:8px}
+.slot .empty-hint{color:var(--text-secondary);font-size:13px}
+.admin-panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px;margin-bottom:16px;display:none}
+.admin-panel.visible{display:block}
+.admin-panel label{font-size:13px;font-weight:500;display:block;margin-bottom:6px}
+.admin-row{display:flex;gap:8px;margin-top:8px}
+.admin-row input{flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;font-family:inherit}
+.admin-row input:focus{border-color:var(--primary)}
+.admin-toggle{cursor:pointer;font-size:12px;color:var(--text-secondary);background:none;border:none;font-family:inherit;text-decoration:underline dotted}
+.admin-toggle:hover{color:#4f6ef7}
+.footer-note{text-align:center;font-size:12px;color:var(--text-secondary);margin-top:8px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1e1e2e;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
+.toast.show{opacity:1}
+.dayoff-msg{text-align:center;padding:32px 0;color:var(--text-secondary);font-size:15px}
+.dayoff-msg span{font-size:36px;display:block;margin-bottom:8px}
+.dayoff-msg .holiday-name{font-weight:600;color:#4f6ef7}
+@media(max-width:480px){body{padding:16px 12px 40px}.identity-bar{flex-direction:column;align-items:stretch}.identity-bar input{min-width:unset}}</style></head>
+<body>
+<div class="container">
+<h1>📋 每日不在岗人员登记</h1>
+<p class="subtitle">周一、二限 7 人 · 周三、四限 8 人 · 周五限 9 人 · 周末及法定节假日休息</p>
+<div class="identity-bar">
+  <label>你的名字</label>
+  <input type="text" id="myName" placeholder="输入你的姓名" maxlength="20">
+  <button class="btn btn-primary btn-sm" id="confirmName">确认</button>
+  <span class="badge" id="identityBadge" style="display:none">未确认</span>
+  <button class="admin-toggle" id="adminToggle">管理员入口</button>
+</div>
+<div class="admin-panel" id="adminPanel">
+  <label>管理员密码</label>
+  <div class="admin-row">
+    <input type="password" id="adminPwd" placeholder="输入管理员密码" maxlength="20">
+    <button class="btn btn-primary btn-sm" id="adminLogin">登录</button>
+  </div>
+  <div class="admin-row" id="adminAddRow" style="display:none">
+    <input type="text" id="adminSlotName" placeholder="要添加的名字" maxlength="20">
+    <input type="number" id="adminSlotIndex" placeholder="位置 (1-9)" min="1" max="9">
+    <button class="btn btn-outline btn-sm" id="adminAddBtn">添加</button>
+  </div>
+</div>
+<div class="date-nav">
+  <div class="nav-btns"><button id="prevDay">◀</button></div>
+  <div style="flex:1;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px">
+    <input type="date" id="datePicker" style="font-size:14px;font-family:inherit;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;outline:none;cursor:pointer;background:var(--card)">
+    <span id="weekdayLabel" style="font-size:14px;font-weight:600;color:var(--primary);white-space:nowrap"></span>
+  </div>
+  <div class="nav-btns"><button id="todayBtn">今天</button><button id="nextDay">▶</button></div>
+</div>
+<div class="slots-card">
+  <div class="slots-header"><h2>不在岗人员</h2><span class="count" id="slotCount">0</span></div>
+  <div class="slot-list" id="slotList"></div>
+</div>
+<div class="footer-note">普通用户只能添加或删除自己的名字 · 管理员可以管理所有人 · 周末及法定节假日不统计 · 数据实时共享</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var SUPABASE_URL='https://oeigvqdtxqdooqhoavsb.supabase.co';
+var SUPABASE_KEY='sb_publishable_y4OXkfbIsUTawkmRCsnoDw_ZjRCZGqQ';
+var HOLIDAYS={'01-01':'元旦','02-16':'春节','02-17':'春节','02-18':'春节','02-19':'春节','02-20':'春节','02-21':'春节','02-22':'春节','04-05':'清明节','05-01':'劳动节','06-19':'端午节','09-27':'中秋节','10-01':'国庆节','10-02':'国庆节','10-03':'国庆节','10-04':'国庆节','10-05':'国庆节','10-06':'国庆节','10-07':'国庆节'};
+var ADMIN_PWD='admin123';
+var dataCache={};
+var user=null,isAdmin=false,currentDate=new Date();currentDate.setHours(0,0,0,0);
+function getDayLimit(d){var w=d.getDay();if(w===0||w===6)return 0;if(w===1||w===2)return 7;if(w===3||w===4)return 8;if(w===5)return 9;return 7}
+function isDayOff(d){var w=d.getDay();if(w===0||w===6)return true;var m=('0'+(d.getMonth()+1)).slice(-2),dy=('0'+d.getDate()).slice(-2);return HOLIDAYS[m+'-'+dy]!==undefined}
+function hn(d){var m=('0'+(d.getMonth()+1)).slice(-2),dy=('0'+d.getDate()).slice(-2);return HOLIDAYS[m+'-'+dy]||null}
+function dk(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function supaHeaders(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'}}
+async function fetchSlots(d){var dt=dk(d);var ck=dataCache[dt];if(ck!==undefined)return ck;try{var r=await fetch(SUPABASE_URL+'/rest/v1/records?date=eq.'+dt+'&select=names',{headers:supaHeaders()});if(!r.ok&&r.status!==406)return[];var j=await r.json();if(j&&j.length>0&&j[0].names){var arr=j[0].names;dataCache[dt]=arr;return arr}dataCache[dt]=[];return[]}catch(e){return[]}}
+async function saveSlots(d,slots){var dt=dk(d);dataCache[dt]=slots;try{var h=supaHeaders();var r=await fetch(SUPABASE_URL+'/rest/v1/records?date=eq.'+dt,{method:'GET',headers:h});var json=await r.json();var exists=json&&json.length>0;if(exists){await fetch(SUPABASE_URL+'/rest/v1/records?date=eq.'+dt,{method:'PATCH',headers:h,body:JSON.stringify({names:slots})})}else{await fetch(SUPABASE_URL+'/rest/v1/records',{method:'POST',headers:h,body:JSON.stringify({date:dt,names:slots})})}}catch(e){}}
+async function render(){var dt=dk(currentDate);var maxSlots=getDayLimit(currentDate);var dOff=isDayOff(currentDate);var wds=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];document.getElementById('datePicker').value=dt;document.getElementById('weekdayLabel').textContent=wds[currentDate.getDay()];document.getElementById('todayBtn').style.display=dk(new Date())===dt?'none':'';var slots=await fetchSlots(currentDate);var cont=document.getElementById('slotList');var ce=document.getElementById('slotCount');ce.textContent=dOff?'休息日':(slots?slots.length:0)+' / '+maxSlots;cont.innerHTML='';if(dOff){var msg=document.createElement('div');msg.className='dayoff-msg';var hn2=hn(currentDate);msg.innerHTML=hn2?'<span>🎉</span>今天休息（<span class="holiday-name">'+hn2+'</span>），不统计':'<span>🎉</span>今天休息，不统计';cont.appendChild(msg);var bdg=document.getElementById('identityBadge');if(user){bdg.textContent=user;bdg.style.display='';bdg.className='badge'+(isAdmin?' admin':'')}else{bdg.style.display='none'}return}for(var i=0;i<maxSlots;i++){var div=document.createElement('div');div.className='slot';if(i<slots.length&&slots[i]&&slots[i].trim()){var nm=slots[i].trim();div.classList.add('occupied');var ns=document.createElement('span');ns.className='name';var is_=document.createElement('span');is_.className='slot-index';is_.textContent=(i+1)+'.';ns.appendChild(is_);ns.appendChild(document.createTextNode(nm));div.appendChild(ns);var act=document.createElement('div');act.className='actions';var canDel=isAdmin||(user&&user===nm);if(canDel){(function(idx){var db=document.createElement('button');db.className='btn btn-ghost btn-sm';db.textContent='✕';db.title='移除';db.addEventListener('click',function(){removeSlot(idx)});act.appendChild(db)})(i);if(act.children.length>0)div.appendChild(act)}if(isAdmin){(function(idx){var eb=document.createElement('button');eb.className='btn btn-outline btn-sm';eb.textContent='✎';eb.title='修改名字';eb.addEventListener('click',function(){var nn=prompt('修改为:',slots[idx]);if(nn&&nn.trim()){slots[idx]=nn.trim();saveSlots(currentDate,slots);render()}});act.appendChild(eb)})(i)}}else{div.classList.add('empty');var h=document.createElement('span');h.className='empty-hint';var is2=document.createElement('span');is2.className='slot-index';is2.textContent=(i+1)+'.';h.appendChild(is2);h.appendChild(document.createTextNode('空闲'));div.appendChild(h);if(user||isAdmin){(function(){var ab=document.createElement('button');ab.className='btn btn-outline btn-sm';ab.textContent='+ 登记';ab.addEventListener('click',async function(){if(!isAdmin&&!user)return;if(slots.length>=maxSlots){showToast('已达 '+maxSlots+' 人上限');return}var name;if(isAdmin){name=prompt('输入要添加的名字:');if(!name||!name.trim())return}else{name=user}var dup=false;for(var k=0;k<slots.length;k++){if(slots[k]&&slots[k].trim()===name.trim()){dup=true;break}}if(dup){showToast('"'+name.trim()+'" 已登记');return}var ins=false;for(var j=0;j<maxSlots;j++){if(j>=slots.length||!slots[j]||!slots[j].trim()){slots[j]=name.trim();ins=true;break}}if(!ins&&slots.length<maxSlots){slots.push(name.trim())}var comp=[];for(var k2=0;k2<slots.length;k2++){if(slots[k2]&&slots[k2].trim())comp.push(slots[k2])}await saveSlots(currentDate,comp);render();showToast('已登记 "'+name.trim()+'"')});div.appendChild(ab)})()}}cont.appendChild(div)}var bdg=document.getElementById('identityBadge');if(user){bdg.textContent=user;bdg.style.display='';bdg.className='badge'+(isAdmin?' admin':'')}else{bdg.style.display='none'}}
+async function removeSlot(idx){var slots=await fetchSlots(currentDate);if(idx<0||idx>=slots.length)return;var nm=slots[idx].trim();if(!isAdmin&&(!user||user!==nm)){showToast('只能删除自己的名字');return}slots.splice(idx,1);await saveSlots(currentDate,slots);render();showToast('已移除 "'+nm+'"')}
+function showToast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(function(){el.classList.remove('show')},2200)}
+document.getElementById('prevDay').addEventListener('click',function(){currentDate.setDate(currentDate.getDate()-1);render()});
+document.getElementById('nextDay').addEventListener('click',function(){currentDate.setDate(currentDate.getDate()+1);render()});
+document.getElementById('todayBtn').addEventListener('click',function(){currentDate=new Date();currentDate.setHours(0,0,0,0);render()});
+document.getElementById('datePicker').addEventListener('change',function(){var p=this.value.split('-');currentDate=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));currentDate.setHours(0,0,0,0);render()});
+document.getElementById('confirmName').addEventListener('click',function(){var inp=document.getElementById('myName'),nm=inp.value.trim();if(!nm){showToast('请输入姓名');return}user=nm;inp.value=nm;render();showToast('你好，'+nm)});
+document.getElementById('myName').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('confirmName').click()});
+document.getElementById('adminToggle').addEventListener('click',function(){document.getElementById('adminPanel').classList.toggle('visible')});
+document.getElementById('adminLogin').addEventListener('click',function(){if(document.getElementById('adminPwd').value===ADMIN_PWD){isAdmin=true;document.getElementById('adminLogin').textContent='已登录';document.getElementById('adminLogin').style.background='#27ae60';document.getElementById('adminAddRow').style.display='flex';showToast('管理员模式已激活');render()}else{showToast('密码错误')}});
+document.getElementById('adminPwd').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('adminLogin').click()});
+document.getElementById('adminAddBtn').addEventListener('click',async function(){var ni=document.getElementById('adminSlotName'),ii=document.getElementById('adminSlotIndex'),nm=ni.value.trim(),idx=parseInt(ii.value),maxSlots=getDayLimit(currentDate);if(!nm){showToast('请输入名字');return}if(isNaN(idx)||idx<1||idx>maxSlots){showToast('位置请输入 1-'+maxSlots);return}var slots=await fetchSlots(currentDate);if(idx-1<slots.length&&slots[idx-1]&&slots[idx-1].trim()){showToast('位置 '+idx+' 已被占用');return}for(var k=0;k<slots.length;k++){if(slots[k]&&slots[k].trim()===nm){showToast('"'+nm+'" 已登记');return}}while(slots.length<idx)slots.push('');slots[idx-1]=nm;var comp=[];for(var k2=0;k2<slots.length;k2++){if(slots[k2]&&slots[k2].trim())comp.push(slots[k2])}if(comp.length>maxSlots){showToast('最多 '+maxSlots+' 人');return}await saveSlots(currentDate,comp);ni.value='';ii.value='';render();showToast('已添加 "'+nm+'" 到位置 '+idx)});
+render();
+</script></body></html>
